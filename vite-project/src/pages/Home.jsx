@@ -187,7 +187,7 @@ function Home() {
               transition={{ duration: 0.8, ease: "easeOut", delay: 0.6 }}
             >
               <Link
-                to="/test"
+                to="/isi-data-diri"
                 className="inline-block px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 transition transform hover:scale-105 duration-300 text-lg"
               >
                 Mulai Tes Sekarang
