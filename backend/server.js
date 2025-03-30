@@ -3,10 +3,26 @@ const express = require("express");
 const mysql = require("mysql");
 const cors = require("cors");
 const util = require("util"); // Tambahkan util untuk promisify
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
 app.use(cors());
 app.use(express.json()); // Untuk membaca JSON dari request body
+
+// Gunakan path relatif ke direktori proyek
+const storageDir = path.join(__dirname, "storage"); // Folder dalam proyek backend
+const resultFilePath = path.join(storageDir, "hasil.txt");
+
+// Pastikan folder storage ada
+if (!fs.existsSync(storageDir)) {
+  fs.mkdirSync(storageDir, { recursive: true });
+}
+
+// Buat file jika belum ada
+if (!fs.existsSync(resultFilePath)) {
+  fs.writeFileSync(resultFilePath, "");
+}
 
 // Konfigurasi koneksi database
 const db = mysql.createConnection({
@@ -38,7 +54,7 @@ app.post("/submit-answers", async (req, res) => {
     const user_id = users[0].id;
 
     // Debugging: Cek apakah jawaban diterima dengan benar
-    console.log("User Email:", users.email);
+    console.log("User Email:", email);
     console.log("User ID:", user_id);
     console.log("Received Answers:", answers);
 
@@ -76,22 +92,29 @@ app.post("/submit-answers", async (req, res) => {
       .sort((a, b) => a - b) // Pastikan urutannya benar
       .map((key) => answers[key] || null); // Jika ada yang kosong, beri null
 
-    // Query insert ke database
     const insertQuery = `
-      INSERT INTO jawaban_user (
-        jwbn_1, jwbn_2, jwbn_3, jwbn_4, jwbn_5, 
-        jwbn_6, jwbn_7, jwbn_8, jwbn_9, jwbn_10, 
-        jwbn_11, jwbn_12, jwbn_13, jwbn_14, jwbn_15, 
-        jwbn_16, jwbn_17, jwbn_18, jwbn_19, jwbn_20, 
-        hasil, created_at, user_id
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
+  INSERT INTO jawaban_user (
+    jwbn_1, jwbn_2, jwbn_3, jwbn_4, jwbn_5, 
+    jwbn_6, jwbn_7, jwbn_8, jwbn_9, jwbn_10, 
+    jwbn_11, jwbn_12, jwbn_13, jwbn_14, jwbn_15, 
+    jwbn_16, jwbn_17, jwbn_18, jwbn_19, jwbn_20, 
+    hasil, created_at, user_id
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`;
 
-    const values = [...sortedAnswers, result, new Date(), user_id];
+    const createdAt = new Date().toISOString().slice(0, 19).replace("T", " ");
+    const values = [...sortedAnswers, result, createdAt, user_id];
 
     await query(insertQuery, values);
 
-    res.json({ message: "Jawaban berhasil disimpan!", result });
+    // Buat string untuk menyimpan ke file
+    const resultEntry = `Nama: ${users[0].nama}\nEmail: ${email}\nAsal Sekolah: ${users[0].asal_sma}\nKelas: ${users[0].kelas}\nHasil: ${result}\nTanggal Tes: ${createdAt}\n----------------------------\n\n`;
+
+    // Simpan ke file
+    fs.appendFileSync(resultFilePath, resultEntry);
+
+    // Return result sebagai string, bukan objek JSON
+    res.json(result);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ message: "Terjadi kesalahan server" });

@@ -120,7 +120,7 @@ function Home() {
     {
       question: "Berapa lama waktu yang dibutuhkan untuk menyelesaikan tes?",
       answer:
-        "Tes ini membutuhkan waktu sekitar 10-15 menit untuk diselesaikan, tergantung pada kecepatan Anda dalam menjawab setiap pertanyaan.",
+        "Tes ini membutuhkan waktu sekitar 3-5 menit untuk diselesaikan, tergantung pada kecepatan Anda dalam menjawab setiap pertanyaan.",
     },
     {
       question: "Apakah hasil tes akan akurat?",

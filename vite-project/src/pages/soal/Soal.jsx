@@ -65,7 +65,9 @@ const Soal = ({ userData }) => {
 
       const result = await response.json();
       alert(`Jawaban berhasil disimpan!`);
-      navigate(`/hasil-tes-tipologi?result=${result}`);
+
+      // Navigasi ke halaman hasil dengan result sebagai parameter
+      navigate(`/hasil-tes-tipologi?result=${encodeURIComponent(result)}`);
     } catch (error) {
       console.error("Error:", error);
       alert("Terjadi kesalahan!");

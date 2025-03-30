@@ -8,7 +8,7 @@ function Footer() {
           <div className="mb-6 md:mb-0">
             <Link to="/" className="flex items-center mb-4">
               <span className="self-center text-2xl font-semibold whitespace-nowrap">
-                Tes Tipologi Institut STTS
+                Tes Tipologi
               </span>
             </Link>
             <p className="text-black text-sm mt-2">
@@ -109,8 +109,7 @@ function Footer() {
 
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-black">
-            &copy; {new Date().getFullYear()} Tes Tipologi Institut STTS. All
-            rights reserved.
+            &copy; {new Date().getFullYear()} Tes Tipologi. All rights reserved.
           </p>
           <div className="mt-4 md:mt-0">
             <ul className="flex space-x-4 text-sm text-black">
